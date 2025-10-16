@@ -1,0 +1,36 @@
+{
+  "name": "oracle-cli",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "next build --turbopack",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^2.0.52",
+    "@ai-sdk/react": "^2.0.72",
+    "@langchain/community": "^0.3.57",
+    "@langchain/core": "^0.3.78",
+    "@langchain/ollama": "^0.2.4",
+    "@langchain/openai": "^0.6.16",
+    "ai": "^5.0.72",
+    "faiss-napi": "^0.10.3",
+    "hnswlib-node": "^3.0.0",
+    "langchain": "^0.3.36",
+    "next": "^15.5.5",
+    "ollama": "^0.5.18",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.14",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,1 @@
+FROM ./rag_data/gemma-3-1b-it-Q3_K_L.gguf

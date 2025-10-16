@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom scrollbar - dark mode with green tint */
+/* Works in Chromium/Edge; Firefox uses different selectors */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0f0b; /* very dark green-black */
+}
+::-webkit-scrollbar-thumb {
+  background-color: #1f3d1f; /* dark green */
+  border-radius: 0;
+  border: 2px solid #0b0f0b;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #2b5c2b; /* brighter green on hover */
+}
+
+/* Select dropdown tweaks */
+select {
+  background-position: right 0.35rem center;
+}
+select option {
+  background-color: #061006; /* deep dark */
+  color: #c3f7c3; /* pale green text */
+}
+select option:hover, select option:focus, select option:checked {
+  background-color: #1f3d1f; /* dark green hover */
+  color: #000000; /* black text on hover */
+}
