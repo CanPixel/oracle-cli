@@ -10,6 +10,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-oracle: var(--font-oracle);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,6 +24,29 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.scanline-overlay::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 5;
+  background-size: 100% 3px, 4px 100%;
+  pointer-events: none;
+  animation: flicker 0.15s infinite;
+}
+
+@keyframes flicker {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 1; }
 }
 
 /* Custom scrollbar - dark mode with green tint */
@@ -43,6 +67,20 @@ body {
   background-color: #2b5c2b; /* brighter green on hover */
 }
 
+/* Custom scrollbar for the terminal feel */
+/* ::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #111827; 
+}
+::-webkit-scrollbar-thumb {
+  background: #10B981; 
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #34D399; 
+} */
+
 /* Select dropdown tweaks */
 select {
   background-position: right 0.35rem center;
@@ -54,4 +92,60 @@ select option {
 select option:hover, select option:focus, select option:checked {
   background-color: #1f3d1f; /* dark green hover */
   color: #000000; /* black text on hover */
+}
+
+
+
+
+.glitch-text {
+  position: relative;
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+}
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 #f59e0b;
+  clip-path: inset(25% 0 55% 0);
+  animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+.glitch-text::after {
+  left: -2px;
+  text-shadow: -1px 0 cyan;
+  clip-path: inset(45% 0 25% 0);
+  animation: glitch-anim-2 2s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+  0% { clip-path: inset(25% 0 55% 0); }
+  10% { clip-path: inset(5% 0 85% 0); }
+  20% { clip-path: inset(65% 0 5% 0); }
+  30% { clip-path: inset(45% 0 45% 0); }
+  40% { clip-path: inset(75% 0 15% 0); }
+  50% { clip-path: inset(15% 0 75% 0); }
+  60% { clip-path: inset(55% 0 25% 0); }
+  70% { clip-path: inset(5% 0 95% 0); }
+  80% { clip-path: inset(85% 0 5% 0); }
+  90% { clip-path: inset(35% 0 55% 0); }
+  100% { clip-path: inset(95% 0 5% 0); }
+}
+@keyframes glitch-anim-2 {
+  0% { clip-path: inset(85% 0 5% 0); }
+  10% { clip-path: inset(25% 0 65% 0); }
+  20% { clip-path: inset(5% 0 85% 0); }
+  30% { clip-path: inset(75% 0 15% 0); }
+  40% { clip-path: inset(15% 0 75% 0); }
+  50% { clip-path: inset(55% 0 25% 0); }
+  60% { clip-path: inset(5% 0 95% 0); }
+  70% { clip-path: inset(45% 0 45% 0); }
+  80% { clip-path: inset(65% 0 15% 0); }
+  90% { clip-path: inset(5% 0 85% 0); }
+  100% { clip-path: inset(95% 0 5% 0); }
 }

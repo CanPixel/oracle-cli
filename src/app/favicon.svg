@@ -1,0 +1,15 @@
+<svg
+  viewBox="0 0 120 40"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <style>
+    path, circle { stroke: #FFFFFF; }
+    @media (prefers-color-scheme: dark) {
+      path, circle { stroke: #FFFFFF; }
+    }
+  </style>
+  <path d="M0 20H40" stroke-width="4" />
+  <path d="M80 20H120" stroke-width="4" />
+  <circle cx="60" cy="20" r="18" stroke-width="4" />
+</svg>
