@@ -11,7 +11,15 @@ const CorruptionSlider: React.FC<CorruptionSliderProps> = ({ level, setLevel }) 
     if (level <= 50) return "Anomalous";
     if (level <= 80) return "Unstable";
     if (level <= 99) return "Hostile";
-    return "S I N G U L A R I T Y";
+    return "SINGULARITY";
+  };
+
+  const getCorruptionColor = () => {
+    if (level <= 20) return "text-emerald-500";
+    if (level <= 50) return "text-yellow-500";
+    if (level <= 80) return "text-yellow-800 glitch-text";
+    if (level <= 99) return "text-red-500 glitch-text";
+    return "text-red-900 glitch-text";
   };
 
   return (
@@ -21,7 +29,7 @@ const CorruptionSlider: React.FC<CorruptionSliderProps> = ({ level, setLevel }) 
         <span className="font-bold">{level}%</span>
       </label>
       <p className="text-gray-400 text-sm mb-4">
-        System Status: <span className="text-red-500 animate-pulse font-bold tracking-wider">{getCorruptionLabel()}</span>
+        System Status: <span data-text={getCorruptionLabel()} className={`${getCorruptionColor()} animate-pulse font-bold tracking-wider`}>{getCorruptionLabel()}</span>
       </p>
       <input
         id="corruption-slider"

@@ -27,7 +27,7 @@ async function warmup() {
     try {
       const url = BASE + path;
       const res = await fetch(url, { method: 'GET' });
-      console.log(`[warmup] ${path} -> ${res.status}`);
+      // console.log(`[warmup] ${path} -> ${res.status}`);
     } catch (e) {
       console.log(`[warmup] ${path} -> error`);
     }

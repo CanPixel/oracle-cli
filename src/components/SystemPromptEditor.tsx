@@ -13,13 +13,14 @@ const SystemPromptEditor: React.FC<SystemPromptEditorProps> = ({ prompt, setProm
         Core Directives
       </label>
       <p className="text-gray-400 text-sm mb-4">
-        Modify the AI's core programming. Changes will be applied on the next transmission.
+        Modify the Oracle core. Changes will be applied on next transmission.
       </p>
       <textarea
         id="system-prompt"
         value={prompt}
+        rows={15}  
         onChange={(e) => setPrompt(e.target.value)}
-        className="flex-grow bg-gray-900 text-green-300 border border-emerald-700/50 p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent selection:bg-emerald-500 selection:text-black"
+        className="flex-grow bg-gray-900 text-green-300 border border-emerald-700/50 p-3 text-xs resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent selection:bg-emerald-500 selection:text-black"
       />
     </div>
   );

@@ -61,12 +61,11 @@ The Oracle is a sci‑fi themed Retrieval‑Augmented Generation (RAG) console t
 ### Models
 - Managed by Ollama at `http://localhost:11434`
 - Example entries in `AVAILABLE_CHAT_MODELS`:
-  - `gemma-2-2b-it-IQ3_M:latest`
-  - `gemma-2-2b-it-Q3_K_L:latest`
-  - `gemma-2-2b-it-Q4_K_M:latest`
-  - `gemma-3-1b-it-Q3_K_L:latest`
-  - `phi3-mini-q3kl:latest`
-- The UI strips `:latest` for cleaner display.
+  - `gemma-2-2b-it-IQ3_M`
+  - `gemma-2-2b-it-Q3_K_L`
+  - `gemma-2-2b-it-Q4_K_M`
+  - `gemma-3-1b-it-Q3_K_L`
+  - `phi3-mini-q3kl`
 
 
 ## Runtime Flow

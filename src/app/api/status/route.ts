@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { DEFAULT_CHAT_MODEL_NAME, AVAILABLE_CHAT_MODELS } from '@/Oracle_Config';
+import { AVAILABLE_CHAT_MODELS } from '@/Oracle_Config';
 import { ensureRagWarmup, isRagActive } from '@/utils/rag';
 import { getCurrentModel } from '@/utils/modelRegistry';
 
@@ -11,6 +11,8 @@ export async function GET(_req: NextRequest) {
 
   const model = getCurrentModel();
   const rag = isRagActive() ? 'active' : 'loading';
+
+  // console.log(AVAILABLE_CHAT_MODELS);
 
   return new Response(
     JSON.stringify({ model, rag, availableModels: AVAILABLE_CHAT_MODELS }),

@@ -7,7 +7,8 @@ import { StringOutputParser } from "@langchain/core/output_parsers";
 import { 
   OLLAMA_BASE_URL, 
   TEMPERATURE,
-  RAG_PROMPT_TEMPLATE, // The combined prompt
+  buildRagPromptTemplate,
+  getCurrentSystemPersona,
 } from '@/Oracle_Config'; 
 import { getCurrentModel } from '@/utils/modelRegistry';
 import { getOracleRetriever } from '@/utils/rag'; 
@@ -102,7 +103,8 @@ export async function POST(req: Request) {
     });
 
     // 3. Define the RAG Chain using LangChain's Runnable API
-    const augmentedTemplate = `MODEL_ID: ${modelName}\n` + RAG_PROMPT_TEMPLATE;
+    const persona = getCurrentSystemPersona();
+    const augmentedTemplate = `MODEL_ID: ${modelName}\n` + buildRagPromptTemplate(persona);
     const ragChain = RunnableSequence.from([
       // A. Retrieve: Takes the user's question, finds the top 3 relevant lore documents, 
       // and passes the formatted context string forward.

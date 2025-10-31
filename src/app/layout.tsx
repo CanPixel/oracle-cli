@@ -25,17 +25,17 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "The Oracle",
+  title: "O R A C L E",
   description: "Sci‑fi RAG console with local Ollama models and switchable quantizations.",
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
   metadataBase: new URL('http://localhost:3000'),
-  applicationName: 'The Oracle',
+  applicationName: 'O R A C L E',
   category: 'AI',
   openGraph: {
-    title: 'The Oracle',
+    title: 'O R A C L E',
     description: 'Sci‑fi RAG console with local Ollama models and switchable quantizations.',
     url: '/',
-    siteName: 'The Oracle',
+    siteName: 'O R A C L E',
     type: 'website',
     images: [
       {
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'The Oracle',
+    title: 'O R A C L E',
     description: 'Sci‑fi RAG console with local Ollama models and switchable quantizations.',
     images: ['/favicon.ico'],
   }
