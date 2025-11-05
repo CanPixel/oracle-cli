@@ -145,8 +145,8 @@ export async function POST(req: Request) {
     // Provide a clear error message back to the client
     return new Response(
       JSON.stringify({ 
-        error: "RAG System Offline. Check console logs for details (Is Ollama running? Is the model pulled?).",
-        details: (error instanceof Error) ? error.message : "Unknown error",
+        body: "[RAG_SYSTEM_OFFLINE]: FETCH FAILED. (WHERE IS OLLAMA?)",
+        // details: (error instanceof Error) ? error.message : "Unknown error",
       }), 
       {
         status: 500,

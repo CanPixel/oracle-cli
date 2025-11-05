@@ -113,6 +113,8 @@ export default function Chat() {
   const [lastEngagedPersona, setLastEngagedPersona] = useState<string>(ORACLE_DEFAULT_SYSTEM_PERSONA);
   const [corruptionLevel, setCorruptionLevel] = useState<number>(0);
 
+  const [systemHealth, setSystemHealth] = useState<'online' | 'offline'>('online');
+
   // Close settings with ESC
   useEffect(() => {
     if (!isSettingsOpen) return;
@@ -171,6 +173,17 @@ export default function Chat() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: [{ role: 'user', content: trimmed }] })
       });
+      
+      if (!res.ok) {
+        setSystemHealth('offline');
+        const fallback = await res.json();
+        setMessages(prev => prev.map(m => m.id === assistantId
+          ? { ...m, parts: [{ type: 'text', text: fallback.body }] as any }
+          : m
+        ));
+        setIsLoading(false);
+        return;
+      }
 
       if (!res.body) {
         const fallback = await res.text();
@@ -181,6 +194,8 @@ export default function Chat() {
         setIsLoading(false);
         return;
       }
+
+      setSystemHealth('online');
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -246,7 +261,9 @@ export default function Chat() {
               ORACLE_ : v1.0
             </h1>
             <p className="text-xs text-slate-500">
-              STATUS: {isLoading ? '[PROCESSING...]' : <span className="p-1 border border-emerald-500 text-cyan-300 animate-pulse">ACTIVE</span>} | MODEL: {modelName}
+              STATUS: {isLoading ? '[PROCESSING...]' : 
+              systemHealth === 'online' ? <span className="p-1 border border-emerald-500 text-cyan-300 animate-pulse">ACTIVE</span> : <span className="p-1 border border-red-500 text-red-400 animate-pulse glitch-text" data-text="!OFFLINE">OFFLINE</span>
+              } | MODEL: {modelName}
             </p>
           </div>
           <div className="flex-1 flex flex-col items-center justify-center space-y-2">
@@ -297,14 +314,19 @@ export default function Chat() {
               </div>
             </div>
             <div className="font-bold font-mono flex items-center space-x-2 mt-2">
-              <span className="text-cyan-500 text-sm animate-pulse">SIGNAL_EST</span>
-              <StatusLight color="bg-cyan-500" pulse={!isLoading} />
-              {/* Settings button moved here */}
+            {systemHealth === 'online' ? (<>
+                <span className="text-cyan-500 text-sm animate-pulse">SIGNAL_EST</span>
+                <StatusLight color="bg-cyan-500" pulse={!isLoading} />
+              </>) : (<>
+                <span className="text-red-500 text-sm animate-pulse">SIGNAL_EST</span>
+                <StatusLight color="bg-red-500" pulse={!isLoading} />
+              </>)}
               <button
                 type="button"
                 aria-label="Open settings"
                 onClick={() => setIsSettingsOpen(true)}
-                className="ml-3 p-1.5 border border-emerald-700/60 text-emerald-300 hover:text-emerald-200 hover:border-emerald-500 bg-slate-900/60 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+                className={`ml-3 p-1.5 border border-emerald-700/60 text-emerald-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:text-gray-300 hover:text-emerald-200 hover:border-emerald-500 bg-slate-900/60 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer`}
+                disabled={systemHealth === 'offline'}
               >
                 <Wrench className="bi bi-wrench w-4 h-4" />
               </button>

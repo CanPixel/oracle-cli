@@ -6,7 +6,11 @@ const AVAILABLE_CHAT_MODELS = [
   "gemma-2-2b-it-IQ3_M",
   "gemma-2-2b-it-Q3_K_L",
   "gemma-2-2b-it-Q4_K_M",
+  "gemma-3-1b-it-Q2_K",
   "gemma-3-1b-it-Q3_K_L",
+  "gemma-3-270m-it-Q2_K_L",
+  "gemma-3-270m-it-Q4_K_M",
+  "granite-4.0-h-1b-Q3_K_M",
   "mistral-7b-instruct-v0.1.Q4_K_M",
   "Phi-3-mini-4k-instruct-Q3_K_L"
 ];
