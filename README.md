@@ -12,9 +12,7 @@ Sci‑fi RAG console powered by local Ollama models. Switch between multiple GGU
 ### Requirements
 - Node 18+
 - Ollama running locally at `http://localhost:11434`
-- Pulled models (examples in this repo):
-  - `gemma-2-2b-it-IQ3_M`
-  - `gemma-2-2b-it-Q3_K_L`
+- Pulled models (examples not in this repo):
   - `gemma-2-2b-it-Q4_K_M`
   - `gemma-3-1b-it-Q3_K_L`
   - `phi3-mini-q3kl`
