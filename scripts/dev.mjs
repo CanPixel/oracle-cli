@@ -35,7 +35,7 @@ async function warmup() {
 }
 
 function run() {
-  const child = spawn('node', ['node_modules/next/dist/bin/next', 'dev', '--turbopack'], {
+  const child = spawn('node', ['node_modules/next/dist/bin/next', 'dev'], {
     stdio: 'inherit',
     env: process.env,
     shell: false,
