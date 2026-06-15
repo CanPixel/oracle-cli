@@ -10,33 +10,36 @@
     "build": "next build --turbopack",
     "start": "next start"
   },
+  "overrides": {
+    "postcss": "^8.5.10"
+  },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.71",
     "@ai-sdk/react": "^3.0.207",
-    "@langchain/community": "^0.3.59",
-    "@langchain/core": "^0.3.80",
-    "@langchain/ollama": "^0.1.6",
-    "@langchain/openai": "^0.6.17",
+    "@langchain/community": "^1.1.29",
+    "@langchain/core": "^1.1.49",
+    "@langchain/ollama": "^1.2.7",
+    "@langchain/openai": "^1.4.7",
     "ai": "^6.0.205",
-    "eslint-config-next": "^15.5.19",
+    "eslint-config-next": "^16.2.9",
     "faiss-napi": "^0.10.3",
     "hnswlib-node": "^3.0.0",
-    "langchain": "^0.3.37",
-    "lucide-react": "^0.552.0",
-    "next": "^15.5.19",
-    "ollama": "0.6.0",
+    "langchain": "^1.4.5",
+    "lucide-react": "^1.18.0",
+    "next": "^16.2.9",
+    "ollama": "0.6.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.1",
-    "@types/node": "^20.19.43",
+    "@types/node": "^25.9.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.5.0",
-    "eslint": "^9.39.4",
+    "eslint": "^10.5.0",
     "postcss": "^8.5.15",
     "tailwindcss": "^4.3.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   }
 }
