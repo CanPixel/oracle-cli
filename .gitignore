@@ -43,3 +43,6 @@ next-env.d.ts
 *.gguf
 
 *.bat
+
+model_list.js
+

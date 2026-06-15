@@ -3,7 +3,8 @@
 // Dynamic list of available chat models from /rag_data/
 const AVAILABLE_CHAT_MODELS = [
   "Phi-3-mini-4k-instruct-Q3_K_L",
-  "gemma-2-2b-it-IQ3_M"
+  "gemma-2-2b-it-IQ3_M",
+  "mistral-7b-instruct-v0.1.Q3_K_L"
 ];
 
 export default AVAILABLE_CHAT_MODELS;

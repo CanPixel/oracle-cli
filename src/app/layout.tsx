@@ -26,14 +26,14 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "O R A C L E",
-  description: "Sci‑fi RAG console with local Ollama models and switchable quantizations.",
+  description: "Sci‑Fi RAG console with local Ollama models and switchable quantizations.",
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
   metadataBase: new URL('http://localhost:3000'),
   applicationName: 'O R A C L E',
   category: 'AI',
   openGraph: {
     title: 'O R A C L E',
-    description: 'Sci‑fi RAG console with local Ollama models and switchable quantizations.',
+    description: 'Sci‑Fi RAG console with local Ollama models and switchable quantizations.',
     url: '/',
     siteName: 'O R A C L E',
     type: 'website',
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary',
     title: 'O R A C L E',
-    description: 'Sci‑fi RAG console with local Ollama models and switchable quantizations.',
+    description: 'Sci‑Fi RAG console with local Ollama models and switchable quantizations.',
     images: ['/favicon.ico'],
   }
 };
