@@ -1,54 +1,88 @@
-### The Oracle
+# The Oracle
 
-Sci‑fi RAG console powered by local Ollama models. Switch between multiple GGUF quantizations, retrieve context from a prebuilt HNSW index, and chat with a cursed starship Oracle.
+Sci‑fi Retrieval‑Augmented Generation (RAG) console powered by local Ollama models. Switch between multiple GGUF quantizations at runtime, retrieve lore context from a local HNSW vector index, customize the live system persona, and chat with a cursed starship AI.
 
-### Features
-- Switch models at runtime via dropdown (no page reload)
-- RAG over local HNSW index (cached retriever)
-- Streaming responses with live Oracle bubble
-- Per‑reply latency display; model switch divider entries
-- Status endpoint indicating model name and RAG state
+## Features
 
-### Requirements
-- Node 18+
-- Ollama running locally at `http://localhost:11434`
-- Pulled models (examples not in this repo):
-  - `gemma-2-2b-it-Q4_K_M`
-  - `gemma-3-1b-it-Q3_K_L`
-  - `phi3-mini-q3kl`
+- **Runtime Model Switching:** Switch between local GGUF quantizations via the header dropdown without reloading the page; logs `SWITCHED TO <model> in <ms>` dividers in the chat stream.
+- **Local HNSWLib RAG:** Retrieves lore context from `rag_data/` using `nomic-embed-text:latest` embeddings and caches the retriever across requests.
+- **Live Persona Editor:** Inspect and modify the Oracle's system prompt at runtime via the wrench menu (`SystemPromptEditor`).
+- **Corruption & Glitch Controls:** Interactive corruption slider (`CorruptionSlider`) and sci‑fi terminal aesthetics with live streaming readouts and per‑reply latency telemetry.
+- **Auto‑Discovered Model List:** Automatically scans `rag_data/*.gguf` before `dev` and `build` to populate `src/model_list.js`.
 
-### Install
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, Turbopack) & React 19
+- **Styling:** Tailwind CSS v4 & Lucide Icons
+- **AI / RAG:** LangChain (`@langchain/ollama`, `@langchain/community`), Vercel AI SDK (`ai`, `@ai-sdk/react`), `hnswlib-node`
+- **Inference:** Local [Ollama](https://ollama.com/) server (`http://localhost:11434`)
+
+## Requirements
+
+1. **Node.js** 20+
+2. **Ollama** running locally at `http://localhost:11434` (`ollama serve`)
+3. **Embedding model** pulled in Ollama:
+   ```bash
+   ollama pull nomic-embed-text:latest
+   ```
+4. **Chat models** registered in Ollama matching the `.gguf` filenames in `rag_data/` (or configured in `Oracle_Config.ts`), for example:
+   - `gemma-2-2b-it-IQ3_M`
+   - `gemma-2-2b-it-Q3_K_L`
+   - `gemma-2-2b-it-Q4_K_M`
+   - `gemma-3-1b-it-Q3_K_L`
+   - `phi3-mini-q3kl`
+
+## Getting Started
+
+### 1. Install dependencies
+
 ```bash
 npm install
 ```
 
-### Dev
+### 2. Start the development server
+
 ```bash
 npm run dev
-# A warmup helper will hit / and /api/status automatically
 ```
-Open `http://localhost:3000`.
 
-### Model Switching
-- The header dropdown lists available models (from `Oracle_Config.ts: AVAILABLE_CHAT_MODELS`).
-- Selecting a model updates the server‑side registry and subsequent chats use it.
-- A divider appears in chat: `SWITCHED TO <model> in <ms>`.
+`npm run dev` automatically:
+1. Runs `generate_config.js` (`npm run config`) to scan `rag_data/` for `.gguf` files and generate `src/model_list.js`.
+2. Launches the Next.js development server via `scripts/dev.mjs` and warms up `/` and `/api/status`.
 
-### RAG Index
-- Index path: `rag_data/` (see `FAISS_PATH`)
-- Retriever is warmed on first access and cached
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### API Overview
-- `GET /api/status` → `{ model, rag, availableModels }`
-- `POST /api/model { model }` → switch active model
-- `POST /api/chat` → streams Oracle response
+## Scripts
 
-### Configuration
-Edit `Oracle_Config.ts` for:
-- `AVAILABLE_CHAT_MODELS`
-- `DEFAULT_CHAT_MODEL_NAME`
-- `EMBEDDING_MODEL_NAME`
-- `OLLAMA_BASE_URL`
+| Command | Description |
+| :--- | :--- |
+| `npm run dev` | Generates the model list from `rag_data/` and starts the Next.js dev server with route warmup |
+| `npm run config` | Scans `rag_data/*.gguf` and writes available model tags to `src/model_list.js` |
+| `npm run build` | Runs `prebuild` (`generate_config.js`) and builds the production app with Turbopack |
+| `npm run start` | Starts the production Next.js server |
 
-### Notes
-- Scrollbars and dropdown styled for dark sci‑fi theme
+### Rebuilding the HNSW Vector Index
+
+If you update `rag_data/oracle_dataset_for_RAG.json`, regenerate `rag_data/hnswlib.dat` and `rag_data/args.json` using `create_hnsw_index.ts` (requires Ollama running with `nomic-embed-text:latest`).
+
+## API Overview
+
+| Endpoint | Method | Description |
+| :--- | :--- | :--- |
+| `/api/status` | `GET` | Returns `{ model, rag, availableModels }` and triggers non‑blocking RAG retriever warmup |
+| `/api/model` | `GET` | Returns `{ current, available }` models |
+| `/api/model` | `POST` | Switches the active model (`{ model: string }`) |
+| `/api/persona` | `GET` | Returns the active system persona (`{ persona: string }`) |
+| `/api/persona` | `POST` | Updates the active in‑memory system persona (`{ persona: string }`) |
+| `/api/chat` | `POST` | Retrieves top‑k lore context from HNSWLib and streams the Oracle's response |
+
+## Configuration
+
+Edit [`Oracle_Config.ts`](./Oracle_Config.ts) to customize defaults:
+
+- `OLLAMA_BASE_URL` — Ollama server URL (default: `"http://localhost:11434"`)
+- `EMBEDDING_MODEL_NAME` — Embedding model for HNSWLib queries (default: `"nomic-embed-text:latest"`)
+- `DEFAULT_CHAT_MODEL_NAME` — Initial chat model loaded on startup (default: `"gemma-2-2b-it-IQ3_M"`)
+- `TEMPERATURE` — Generation temperature (default: `0.7`)
+- `FAISS_PATH` — Directory containing the HNSWLib index and `.gguf` files (default: `"rag_data"`)
+- `ORACLE_DEFAULT_SYSTEM_PERSONA` — Default system prompt for the Oracle persona
