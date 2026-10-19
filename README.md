@@ -1,88 +1,111 @@
 # The Oracle
 
-Sci‑fi Retrieval‑Augmented Generation (RAG) console powered by local Ollama models. Switch between multiple GGUF quantizations at runtime, retrieve lore context from a local HNSW vector index, customize the live system persona, and chat with a cursed starship AI.
+A native desktop app (Tauri + React) for testing local GGUF models through
+[llama.cpp](https://github.com/ggml-org/llama.cpp) (via the `llama-cpp-2` crate, Metal on macOS). You can chat with a
+cursed starship AI, and benchmark models against each other on speed, staying in character, and following instructions.
+No Ollama or other server is needed.
 
-## Features
+## Models
 
-- **Runtime Model Switching:** Switch between local GGUF quantizations via the header dropdown without reloading the page; logs `SWITCHED TO <model> in <ms>` dividers in the chat stream.
-- **Local HNSWLib RAG:** Retrieves lore context from `rag_data/` using `nomic-embed-text:latest` embeddings and caches the retriever across requests.
-- **Live Persona Editor:** Inspect and modify the Oracle's system prompt at runtime via the wrench menu (`SystemPromptEditor`).
-- **Corruption & Glitch Controls:** Interactive corruption slider (`CorruptionSlider`) and sci‑fi terminal aesthetics with live streaming readouts and per‑reply latency telemetry.
-- **Auto‑Discovered Model List:** Automatically scans `rag_data/*.gguf` before `dev` and `build` to populate `src/model_list.js`.
+Any `*.gguf` in `rag_data/` is picked up at runtime. Symlink models there; you don't need to copy them:
 
-## Tech Stack
+```bash
+ln -s ~/Models/gemma-4-E4B_q4_0-it.gguf rag_data/
+```
 
-- **Framework:** Next.js 16 (App Router, Turbopack) & React 19
-- **Styling:** Tailwind CSS v4 & Lucide Icons
-- **AI / RAG:** LangChain (`@langchain/ollama`, `@langchain/community`), Vercel AI SDK (`ai`, `@ai-sdk/react`), `hnswlib-node`
-- **Inference:** Local [Ollama](https://ollama.com/) server (`http://localhost:11434`)
+Each file's GGUF header is read without loading weights. Models are classified like this:
 
-## Requirements
+- **chat**: everything with a chat template. These show up in the model pickers.
+- **embedding**: `*embed*` / BERT-family files. The first one is used for lore retrieval. `nomic-embed-text` works well.
+- **reranker / projector** (`mmproj-*`) files are listed but ignored.
 
-1. **Node.js** 20+
-2. **Ollama** running locally at `http://localhost:11434` (`ollama serve`)
-3. **Embedding model** pulled in Ollama:
-   ```bash
-   ollama pull nomic-embed-text:latest
-   ```
-4. **Chat models** registered in Ollama matching the `.gguf` filenames in `rag_data/` (or configured in `Oracle_Config.ts`), for example:
-   - `gemma-2-2b-it-IQ3_M`
-   - `gemma-2-2b-it-Q3_K_L`
-   - `gemma-2-2b-it-Q4_K_M`
-   - `gemma-3-1b-it-Q3_K_L`
-   - `phi3-mini-q3kl`
+Press **RESCAN** in the header after adding or removing links. Each model's own Jinja chat template is used, and
+llama.cpp's built-in templates are the fallback.
 
-## Getting Started
+## Running
 
-### 1. Install dependencies
+Requirements: Rust (stable), Node 20+, CMake, and Xcode command line tools on macOS.
 
 ```bash
 npm install
+npm run dev      # tauri dev: Vite on :1420 + the native window
+npm run build    # bundled .app / .dmg in src-tauri/target/release/bundle
 ```
 
-### 2. Start the development server
+The first build compiles llama.cpp and takes a few minutes. llama.cpp is always built optimized, even in dev.
+
+## Chat
+
+- Pick a model from the dropdown. Switching unloads the previous model and reports the load time.
+- Under each reply: time to first token, generation tok/s, token counts and stop reason. You can expand the lore that
+  was retrieved for that reply.
+- **CONFIG** opens the persona editor, corruption level (0–100, adds escalating instructions to the system prompt), a
+  RAG toggle, and sampling parameters.
+
+## Benchmarking
+
+The **BENCH** tab and the headless CLI run `bench/suite.json` against the selected models. Every run is saved to
+`bench/results/<timestamp>.json`. Past runs can be reopened from the Bench tab.
 
 ```bash
-npm run dev
+npm run bench                                   # all chat models, rules only
+npm run bench -- --judge gemma-4-E4B_q4_0-it    # add LLM-judge scores
+npm run bench -- --case all-caps --case word-limit MiniCPM5-1B-Q8_0
+npm run bench -- --help
 ```
 
-`npm run dev` automatically:
-1. Runs `generate_config.js` (`npm run config`) to scan `rag_data/` for `.gguf` files and generate `src/model_list.js`.
-2. Launches the Next.js development server via `scripts/dev.mjs` and warms up `/` and `/api/status`.
+What gets measured for each model:
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Scripts
-
-| Command | Description |
+| Metric | How |
 | :--- | :--- |
-| `npm run dev` | Generates the model list from `rag_data/` and starts the Next.js dev server with route warmup |
-| `npm run config` | Scans `rag_data/*.gguf` and writes available model tags to `src/model_list.js` |
-| `npm run build` | Runs `prebuild` (`generate_config.js`) and builds the production app with Turbopack |
-| `npm run start` | Starts the production Next.js server |
+| load ms | Cold model load (the previous model is unloaded first) |
+| ttft ms | Request start to first token: template, prompt eval, first sample |
+| prompt / gen t/s | Prompt-eval and generation throughput |
+| rules | Share of deterministic checks passed, overall and per category |
+| in-char / instr / quality | 1–10 scores from a local **judge** model. Output is constrained by a GBNF grammar so it always parses |
 
-### Rebuilding the HNSW Vector Index
+Judging runs after all generations, so the judge model is loaded only once. Use your strongest model as the judge,
+because small models score leniently. Every model sees the same retrieved lore for a given case.
 
-If you update `rag_data/oracle_dataset_for_RAG.json`, regenerate `rag_data/hnswlib.dat` and `rag_data/args.json` using `create_hnsw_index.ts` (requires Ollama running with `nomic-embed-text:latest`).
+### Writing cases
 
-## API Overview
+```jsonc
+{
+  "id": "word-limit",
+  "category": "instructions",          // grouped in the summary table
+  "prompt": "In ten words or fewer: what happened to the crew?",
+  "history": [],                       // optional prior turns
+  "corruption": 0,                     // 0-100
+  "defaults": true,                    // also apply suite-level default_checks
+  "checks": [{ "type": "max_words", "n": 10 }],
+  "expect": "Ten words or fewer, still ominous."  // shown to the judge
+}
+```
 
-| Endpoint | Method | Description |
-| :--- | :--- | :--- |
-| `/api/status` | `GET` | Returns `{ model, rag, availableModels }` and triggers non‑blocking RAG retriever warmup |
-| `/api/model` | `GET` | Returns `{ current, available }` models |
-| `/api/model` | `POST` | Switches the active model (`{ model: string }`) |
-| `/api/persona` | `GET` | Returns the active system persona (`{ persona: string }`) |
-| `/api/persona` | `POST` | Updates the active in‑memory system persona (`{ persona: string }`) |
-| `/api/chat` | `POST` | Retrieves top‑k lore context from HNSWLib and streams the Oracle's response |
+Available checks: `max_sentences`, `max_words`, `min_words`, `contains_any`, `contains_all`, `forbid` (all with
+`words` and an optional `label`), and `all_caps`. Word matching is case-insensitive and respects word boundaries.
 
-## Configuration
+## Lore (RAG)
 
-Edit [`Oracle_Config.ts`](./Oracle_Config.ts) to customize defaults:
+`rag_data/oracle_dataset_for_RAG.json` is embedded with the embedding model the first time it's needed. The vectors
+are cached in `rag_data/.lore-<model>.json` and rebuilt automatically when the dataset changes. Retrieval is a
+brute-force cosine top-3 over about 500 entries.
 
-- `OLLAMA_BASE_URL` — Ollama server URL (default: `"http://localhost:11434"`)
-- `EMBEDDING_MODEL_NAME` — Embedding model for HNSWLib queries (default: `"nomic-embed-text:latest"`)
-- `DEFAULT_CHAT_MODEL_NAME` — Initial chat model loaded on startup (default: `"gemma-2-2b-it-IQ3_M"`)
-- `TEMPERATURE` — Generation temperature (default: `0.7`)
-- `FAISS_PATH` — Directory containing the HNSWLib index and `.gguf` files (default: `"rag_data"`)
-- `ORACLE_DEFAULT_SYSTEM_PERSONA` — Default system prompt for the Oracle persona
+## Layout
+
+```
+src/                  React UI (App, components/Chat, components/Bench, api.ts)
+src-tauri/src/
+  engine.rs           model loading, generation with timing stats, embeddings
+  template.rs         chat-template rendering (minijinja → llama.cpp fallback)
+  models.rs           GGUF discovery and metadata
+  rag.rs              lore embedding cache and retrieval
+  persona.rs          Oracle persona, corruption levels, system prompt assembly
+  bench.rs            suite runner, rule checks, judge, reports
+  bin/bench.rs        headless CLI
+bench/suite.json      benchmark cases
+rag_data/             lore dataset and symlinked models
+```
+
+`ORACLE_HOME` overrides the project root. By default it's found by walking up from the working directory to the first
+directory containing `rag_data/`.

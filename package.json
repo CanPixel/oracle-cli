@@ -1,45 +1,30 @@
 {
-  "name": "oracle-cli",
-  "version": "0.1.0",
+  "name": "oracle",
+  "version": "0.2.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "prebuild": "node generate_config.js",
-    "config": "node generate_config.js",
-    "start-next": "node scripts/dev.mjs",
-    "dev": "npm run config && npm run start-next",
-    "build": "next build --turbopack",
-    "start": "next start"
-  },
-  "overrides": {
-    "eslint": "$eslint"
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "bench": "cargo run --release --manifest-path src-tauri/Cargo.toml --bin bench --",
+    "vite": "vite",
+    "vite:build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^3.0.71",
-    "@ai-sdk/react": "^3.0.207",
-    "@langchain/community": "^1.1.29",
-    "@langchain/core": "^1.1.49",
-    "@langchain/ollama": "^1.2.7",
-    "@langchain/openai": "^1.4.7",
-    "ai": "^6.0.205",
-    "faiss-napi": "^0.10.3",
-    "hnswlib-node": "^3.0.0",
-    "langchain": "^1.4.5",
-    "lucide-react": "^1.18.0",
-    "next": "^16.4.2",
-    "ollama": "0.6.3",
+    "@fontsource/vt323": "^5.2.7",
+    "@tauri-apps/api": "^2.12.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.1",
-    "@types/node": "^25.9.3",
+    "@tailwindcss/vite": "^4.3.3",
+    "@tauri-apps/cli": "^2.12.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "autoprefixer": "^10.5.0",
-    "eslint": "^10.5.0",
-    "eslint-config-next": "^16.4.2",
-    "postcss": "^8.5.15",
+    "@vitejs/plugin-react": "^6.1.2",
     "tailwindcss": "^4.3.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vite": "^8.3.4"
   }
 }

@@ -1,0 +1,60 @@
+@import "tailwindcss";
+@import "@fontsource/vt323";
+
+@theme {
+  --font-oracle: "VT323", ui-monospace, monospace;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: #05080a;
+  color: #e2e8f0;
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-mono);
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0b0f0b; }
+::-webkit-scrollbar-thumb { background-color: #1f3d1f; border: 2px solid #0b0f0b; }
+::-webkit-scrollbar-thumb:hover { background-color: #2b5c2b; }
+
+select option { background-color: #061006; color: #c3f7c3; }
+
+input[type="range"] { accent-color: #10b981; }
+
+.glitch-text { position: relative; }
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: inherit;
+}
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 #f59e0b;
+  animation: glitch 2s infinite linear alternate-reverse;
+}
+.glitch-text::after {
+  left: -2px;
+  text-shadow: -1px 0 cyan;
+  animation: glitch 2.6s infinite linear alternate-reverse;
+}
+@keyframes glitch {
+  0% { clip-path: inset(25% 0 55% 0); }
+  20% { clip-path: inset(65% 0 5% 0); }
+  40% { clip-path: inset(75% 0 15% 0); }
+  60% { clip-path: inset(55% 0 25% 0); }
+  80% { clip-path: inset(85% 0 5% 0); }
+  100% { clip-path: inset(5% 0 85% 0); }
+}
+
+@keyframes slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
